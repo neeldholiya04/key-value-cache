@@ -1,0 +1,23 @@
+services:
+  app:
+    container_name: springboot-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+#      - "7171:8000"
+      - "7171:8181"
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - spring-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+
+networks:
+  spring-network:
+    driver: bridge
