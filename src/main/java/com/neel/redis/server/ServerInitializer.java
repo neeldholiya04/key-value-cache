@@ -27,14 +27,11 @@ class ServerInitializer extends ChannelInitializer<SocketChannel> {
     public void initChannel(SocketChannel ch) {
         ChannelPipeline pipeline = ch.pipeline();
 
-        // Connection timeout handler - close inactive connections
         pipeline.addLast(new IdleStateHandler(0, 0, 30, TimeUnit.SECONDS));
 
-        // HTTP codec - efficient HTTP parsing
         pipeline.addLast(new HttpServerCodec());
         pipeline.addLast(new HttpObjectAggregator(65536));
 
-        // Put business logic handler in separate thread pool to prevent I/O thread blocking
         pipeline.addLast(businessGroup, "cacheHandler", new CacheHttpHandler(cacheService, objectMapper));
     }
 }

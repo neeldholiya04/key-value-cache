@@ -28,11 +28,9 @@ class CacheHttpHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
         String uri = request.uri();
 
         if (uri.startsWith("/get") && request.method() == HttpMethod.GET) {
-            // Handle GET operation
             QueryStringDecoder decoder = new QueryStringDecoder(uri);
             Map<String, List<String>> params = decoder.parameters();
 
-            // Fix: Check if "key" parameter exists
             if (!params.containsKey("key") || params.get("key").isEmpty()) {
                 sendHttpResponse(ctx, request, Map.of(
                     "status", "ERROR",
@@ -45,7 +43,6 @@ class CacheHttpHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
             Map<String, Object> response = cacheService.get(key);
             sendHttpResponse(ctx, request, response);
         } else if (uri.equals("/put") && request.method() == HttpMethod.POST) {
-            // Handle PUT operation
             try {
                 ByteBuf content = request.content();
                 if (content.readableBytes() == 0) {
@@ -59,7 +56,6 @@ class CacheHttpHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
                 String jsonStr = content.toString(CharsetUtil.UTF_8);
                 Map<String, String> requestMap = objectMapper.readValue(jsonStr, Map.class);
 
-                // Validate required fields
                 if (!requestMap.containsKey("key") || !requestMap.containsKey("value")) {
                     sendHttpResponse(ctx, request, Map.of(
                         "status", "ERROR",
