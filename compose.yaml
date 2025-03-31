@@ -15,8 +15,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1'
-          memory: 1G
+          cpus: '12'
+          memory: 16G
 
 networks:
   spring-network:
